@@ -61,7 +61,7 @@ from models.sper import SP
 from services.user import UserService
 
 sp = SP()  # 一个爬虫子
-userservice = UserService(sp)  # user相关的api
+userservice = UserService(sp)  # user相关的service
 userservice.login_progress()  # 调用扫码登录业务
 ```
 
