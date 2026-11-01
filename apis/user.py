@@ -50,9 +50,9 @@ class USERAPI:
         res = self.sp.session.get("https://zjy2.icve.com.cn/prod-api/auth/passLogin", params=params)
         # log(["userapi", "loginv2"], res.json())
         res = res.json()["data"]
-        # self.sp.session.cookies.update({
-        #     "Token": res["data"],
-        # })
+        self.sp.session.cookies.update({
+            "Token": res["access_token"],
+        })
         self.sp.authorization = f"Bearer {res["access_token"]}"
 
     # 获取用户信息
@@ -74,21 +74,21 @@ class USERAPI:
     # 获取用户信息
     def mev2(self) -> dict | None:
         params = {
-            "token": self.sp.session.cookies.get_dict()["token"],
+            "token": self.sp.session.cookies.get_dict().get("token", ""),
         }
         headers = {
             "authorization": self.sp.authorization,
         }
-        res = self.sp.session.post("https://sso.icve.com.cn/prod-api/user/userInfo", headers=headers, params=params).json()
-        if res["code"] == 401:
-            log(["userapi", "me"], "未登录")
-            # print("userapi : me : 未登录")
-            return None
-        else:
+        res = self.sp.session.post("https://sso.icve.com.cn/prod-api/user/userInfo", headers=headers,
+                                   params=params).json()
+        if res["data"]:
             user = res["data"]
             log(["userapi", "me"], f"已登录 | {user["schoolName"]} | {user["displayName"]} | {user["mobile"]}")
             # print(f'userapi : me : 已登录 | {user["schoolName"]} | {user["nickName"]} | {user["phonenumber"]}')
-            return user
+        else:
+            log(["userapi", "me"], "未登录")
+            # print("userapi : me : 未登录")
+        return res["data"]
 
     # 退登
     def logout(self):
@@ -122,21 +122,10 @@ def login_progress():
         if status == 2:
             # userapi.login(token)
             userapi.loginv2(token)
-            sp.me = userapi.me()
+            sp.me = userapi.mev2()
             sp.save()
             return
         time.sleep(1.23)
-
-
-def wait_user_confirm():
-    global sp, userapi
-    while not sp.me:
-        if not sp.me:
-            sceneId, qrUrl = userapi.login_qrcode()
-            print(userapi.login_qrcode_status(sceneId))
-            time.sleep(1.23)
-        else:
-            break
 
 
 if __name__ == '__main__':

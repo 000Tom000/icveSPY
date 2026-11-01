@@ -3,7 +3,7 @@ import pathlib
 
 import requests
 
-from config import AUTH_FILE, COOKIES_FILE, ME_FILE
+from config import AUTH_FILE, COOKIES_FILE, ME_FILE, STUDY_LOG_FILE, MAIN_LOG_FILE, USER_LOG_FILE
 from datetime import datetime
 
 
@@ -74,4 +74,14 @@ def log(sign: list | str, text: str) -> None:
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
     if type(sign) == str:
         sign = [sign]
-    print(f"{timestamp}\t\t{'->'.join(sign)}\t\t{text}")
+    hint_text = f"{timestamp}\t\t{'->'.join(sign)}\t\t{text}"
+    api_sign = sign[0]
+    if api_sign == "study":
+        file_path = STUDY_LOG_FILE
+    elif api_sign == "user":
+        file_path = USER_LOG_FILE
+    else:
+        file_path = MAIN_LOG_FILE
+    with open(file_path, "a+", encoding="utf-8") as file:
+        file.write(f"{hint_text}\n")
+    print(hint_text)
