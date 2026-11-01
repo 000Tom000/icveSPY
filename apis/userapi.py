@@ -5,7 +5,7 @@ from utils.common import show_qrcode
 from utils.baseIO import log
 
 
-class USERAPI:
+class UserApi:
     def __init__(self, sp: SP):
         super().__init__()
         self.sp = sp
@@ -79,14 +79,7 @@ class USERAPI:
         }
         res = self.sp.session.post("https://sso.icve.com.cn/prod-api/user/userInfo", headers=headers,
                                    params=params).json()
-        if res["data"]:
-            user = res["data"]
-            log(["userapi", "me"], f"已登录 | {user["schoolName"]} | {user["displayName"]} | {user["mobile"]}")
-            # print(f'userapi : me : 已登录 | {user["schoolName"]} | {user["nickName"]} | {user["phonenumber"]}')
-        else:
-            log(["userapi", "me"], "未登录")
-            # print("userapi : me : 未登录")
-        return res["data"]
+        self.sp.me = res["data"]
 
     # 退登
     def logout(self):
@@ -99,38 +92,36 @@ class USERAPI:
         res = self.sp.session.delete("https://zjy2.icve.com.cn/prod-api/auth/logout", headers=headers, params=params)
         log(["userapi", "logout"], res.json())
 
-
 # 登录过程
 ## 判定了用户未登录就可以调用该函数
-def login_progress():
-    global sp, userapi
-    sceneId, qrUrl = userapi.login_qrcode()
-    while True:
-        # print(userapi.login_qrcode_status(sceneId))
-        status, expireTime, token = userapi.login_qrcode_status(sceneId)
-        # print(status, expireTime)
-        status_str = "status : " + str(status)
-        if status == 0:
-            status_str = "未扫码"
-        elif status == 1:
-            status_str = "已扫码待确认"
-        elif status == 2:
-            status_str = "已登录"
-        print(f"{status_str} | 剩余过期时间 {expireTime} s")
-        if status == 2:
-            # userapi.login(token)
-            userapi.loginv2(token)
-            sp.me = userapi.mev2()
-            sp.save()
-            return
-        time.sleep(1.23)
+# def login_progress(sp: SP, userapi: USERAPI):
+#     sceneId, qrUrl = userapi.login_qrcode()
+#     while True:
+#         # print(userapi.login_qrcode_status(sceneId))
+#         status, expireTime, token = userapi.login_qrcode_status(sceneId)
+#         # print(status, expireTime)
+#         status_str = "status : " + str(status)
+#         if status == 0:
+#             status_str = "未扫码"
+#         elif status == 1:
+#             status_str = "已扫码待确认"
+#         elif status == 2:
+#             status_str = "已登录"
+#         print(f"{status_str} | 剩余过期时间 {expireTime} s")
+#         if status == 2:
+#             # userapi.login(token)
+#             userapi.loginv2(token)
+#             sp.me = userapi.mev2()
+#             sp.save()
+#             return
+#         time.sleep(1.23)
 
 
-if __name__ == '__main__':
-    # 一个爬虫子
-    sp = SP()
-    userapi = USERAPI(sp)
-    # sp.me = userapi.me()
-    sp.me = userapi.mev2()
-    while not sp.me:
-        login_progress()
+# if __name__ == '__main__':
+#     # 一个爬虫子
+#     sp = SP()
+#     userapi = USERAPI(sp)
+#     # sp.me = userapi.me()
+#     sp.me = userapi.mev2()
+#     while not sp.me:
+#         login_progress(sp, userapi)

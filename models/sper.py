@@ -1,19 +1,19 @@
 import requests
 
-from utils.baseIO import get_auth, get_cookies, save_auth, save_cookies, save_me
+from utils.baseIO import get_auth, get_cookies, save_auth, save_cookies, save_me, get_me
 
 
 class SP:
-    def __init__(self, me:dict = None):
+    def __init__(self):
         super().__init__()
         self.load()
-        self.me = me
 
     # 加载所有
     def load(self):
         self.session = requests.Session()
         self.session.cookies.update(get_cookies())
         self.authorization = get_auth()
+        self.me = get_me()
 
     # 保存所有
     def save(self):

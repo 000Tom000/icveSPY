@@ -1,7 +1,7 @@
 import json
 import pathlib
 
-from utils.config import AUTH_FILE, COOKIES_FILE, ME_FILE, STUDY_LOG_FILE, MAIN_LOG_FILE, USER_LOG_FILE
+from config import AUTH_FILE, COOKIES_FILE, ME_FILE, STUDY_LOG_FILE, MAIN_LOG_FILE, USER_LOG_FILE
 from datetime import datetime
 
 

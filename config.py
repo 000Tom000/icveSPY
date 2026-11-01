@@ -2,6 +2,8 @@ import pathlib
 
 ROOT = pathlib.Path(__file__).parent.resolve()
 APIS_DIR = ROOT / "apis"
+SERVICES_DIR = ROOT / "services"
+UTILS_DIR = ROOT / "utils"
 CACHES_DIR = ROOT / "caches"
 LOGS_DIR = ROOT / "logs"
 # 缓存文件
