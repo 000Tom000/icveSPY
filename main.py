@@ -5,7 +5,7 @@ import time
 from apis.course import COURSEAPI
 from apis.study import STUDYAPI, ppt_study, video_study
 from apis.user import USERAPI
-from sper import SP
+from models.sper import SP
 from utils.baseIO import log
 
 

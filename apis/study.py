@@ -4,7 +4,7 @@ import time
 
 from apis.course import COURSEAPI, select_course
 from apis.user import USERAPI
-from sper import SP
+from models.sper import SP
 from utils.baseIO import log, show_kv
 from utils.encrypt import encrypt_data
 

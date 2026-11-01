@@ -1,8 +1,6 @@
 import time
 
-import requests
-
-from sper import SP
+from models.sper import SP
 from utils.common import show_qrcode
 from utils.baseIO import log
 
