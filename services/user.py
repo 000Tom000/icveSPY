@@ -37,6 +37,7 @@ class UserService:
             if status == 2:
                 # userapi.login(token)
                 self.userapi.loginv2(token)
-                self.sp.me = self.userapi.mev2()
+                self.userapi.mev2()
+                self.sp.save()
                 return
             time.sleep(1.23)

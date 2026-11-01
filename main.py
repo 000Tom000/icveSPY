@@ -59,7 +59,7 @@ if __name__ == '__main__':
     ensure_login(sp)
     # auto_checkin("linux")
 
-    # auto_study_course("软件测试", sp)
+    auto_study_course("软件测试")
     # auto_study_course("AI")
     # auto_study_course("linux")
-    auto_study_course("Web")
+    # auto_study_course("Web")

@@ -57,8 +57,11 @@ def save_me(me: dict) -> None:
 
 # 获取me
 def get_me() -> dict:
-    with open(ME_FILE, "r", encoding="utf-8") as file:
-        return json.load(file)
+    if pathlib.Path(ME_FILE).exists():
+        with open(ME_FILE, "r", encoding="utf-8") as file:
+            return json.load(file)
+    else:
+        return dict()
 
 
 # 打印dict
