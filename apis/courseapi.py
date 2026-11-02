@@ -36,7 +36,7 @@ class CourseApi():
             "pageSize": 100,
             "classId": classId,
             "courseId": courseId,
-            "courseInfoId": courseId,
+            "courseInfoId": courseInfoId,
             "isCriteria": 1
         }
         res = self.sp.session.get("https://zjy2.icve.com.cn/prod-api/spoc/courseFaceTeachInfo/student/listByDates",
