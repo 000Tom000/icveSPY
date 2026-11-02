@@ -65,6 +65,54 @@ class CourseApi():
         res = res.json()["data"]
         return res
 
+    # 签到
+    def checkin(self, classId: str, courseId: str, courseInfoId: str, signId: str, teachId: str) -> bool:
+        headers = {
+            "authorization": self.sp.authorization,
+            "content-type": "application/json;charset=utf-8",
+        }
+        data = {
+            "classId": classId,
+            "courseId": courseId,
+            "courseInfoId": courseInfoId,
+            "signId": signId,
+            "signResultType": 1,
+            "teachId": teachId
+        }
+        res = self.sp.session.post("https://zjy2.icve.com.cn/prod-api/spoc/courseFaceTeachSignStudent", headers=headers,
+                                   data=data)
+        res = res.json()
+        if res["code"] == 200:
+            log(["签到", "success"], "签到成功！")
+            return True
+        else:
+            log(["签到", "error"], res["msg"])
+            return False
+
+    # 抢答
+    def quick_ans(self, classId: str, courseId: str, courseInfoId: str, questionId: str, teachId: str):
+        headers = {
+            "authorization": self.sp.authorization,
+            "content-type": "application/json;charset=utf-8",
+        }
+        data = {
+            "classId": classId,
+            "courseId": courseId,
+            "courseInfoId": courseInfoId,
+            "questionId": questionId,
+            "teachId": teachId
+        }
+        res = self.sp.session.post(
+            "https://zjy2.icve.com.cn/prod-api/spoc/courseFaceTeachQuestionStudent/preemptiveAnswer", headers=headers,
+            json=data)
+        res = res.json()
+        if res["code"] == 200:
+            log(["抢答", "success"], "抢答成功！")
+            return True
+        else:
+            log(["抢答", "error"], res["msg"])
+            return False
+
 
 if __name__ == '__main__':
     courseApi = CourseApi(SP())

@@ -95,7 +95,8 @@ class StudyService:
         if res.get("status", 2) < 0:
             log(["学习", "error"], "该课件有问题，请手动学习")
             return
-        if target["fileType"] == "ppt" or target["fileType"] == "txt" or target["fileType"] == "doc":
+        ppt_type_fixes = ["ppt", "txt", "doc", "rtf"]
+        if target["fileType"] in ppt_type_fixes:
             end = res["args"]["page_count"]
             start = math.floor(target["speed"] / 100 * end)
             self.ppt_study(classId, target["courseInfoId"], target["id"], start, end, target["name"])
