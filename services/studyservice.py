@@ -16,7 +16,7 @@ class StudyService:
 
     # 学习内容
     def sources(self, courseId: str, courseInfoId: str, classId: str):
-        log(["获取学习内容", "info"], "正在获取学习资源，该过程可能耗时较长，请耐心等待 ...")
+        log(["获取学习内容"], "正在获取学习资源，该过程可能耗时较长，请耐心等待 ...")
         studies = self.studyapi.studies(courseId, courseInfoId, classId)
         studies = collections.deque(studies)
         targets = list()
@@ -36,7 +36,7 @@ class StudyService:
                 else:
                     targets.append(st)
             time.sleep(0.21)
-        log(["获取学习内容", "info"], f"获取到 {len(targets)} 个学习资源")
+        log(["获取学习内容"], f"获取到 {len(targets)} 个学习资源")
         return targets
 
     # ppt学习
@@ -55,9 +55,9 @@ class StudyService:
             data["lastNum"] = lastNum
             success = self.studyapi.study(data)
             if success:
-                log(["学习", "success"], f"{name} | 课件 | {lastNum} / {end} | 学习成功 √")
+                log(["success", "学习"], f"{name} | 课件 | {lastNum} / {end} | 学习成功 √")
             else:
-                log(["学习", "error"], f"{name} | 课件 | {lastNum} / {end} | 学习失败 X")
+                log(["error", "学习"], f"{name} | 课件 | {lastNum} / {end} | 学习失败 X")
             time.sleep(0.34)
 
     # 视频学习
@@ -80,9 +80,9 @@ class StudyService:
             data["lastNum"] = lastNum
             success = self.studyapi.study(data)
             if success:
-                log(["学习", "success"], f"{name} | 视频 | {lastNum} / {end} | 学习成功 √")
+                log(["success", "学习"], f"{name} | 视频 | {lastNum} / {end} | 学习成功 √")
             else:
-                log(["学习", "error"], f"{name} | 视频 | {lastNum} / {end} | 学习失败 X")
+                log(["error", "学习"], f"{name} | 视频 | {lastNum} / {end} | 学习失败 X")
             time.sleep(0.34)
 
     # 学习
@@ -90,10 +90,10 @@ class StudyService:
         url = json.loads(target["fileUrl"])["url"]
         res = self.studyapi.status(url)
         if res.get("code", 200) == 500:
-            log(["学习", "error"], res["msg"])
+            log(["error", "学习"], res["msg"])
             return
         if res.get("status", 2) < 0:
-            log(["学习", "error"], "该课件有问题，请手动学习")
+            log(["error", "学习"], "该课件有问题，请手动学习")
             return
         ppt_type_fixes = ["ppt", "txt", "doc", "rtf"]
         if target["fileType"] in ppt_type_fixes:

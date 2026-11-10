@@ -16,10 +16,10 @@ class UserService:
         self.userapi.mev2()
         if self.sp.me:
             self.sp.save()
-            log(["个人信息", "info"],
+            log(["账号登录状态"],
                 f"已登录 | {self.sp.me["schoolName"]} | {self.sp.me["displayName"]} | {self.sp.me["mobile"]}")
         else:
-            log(["个人信息", "info"], "未登录")
+            log(["账号登录状态"], "未登录")
 
     # 扫码登录
     def login_progress(self):
@@ -29,11 +29,15 @@ class UserService:
             status_str = "status : " + str(status)
             if status == 0:
                 status_str = "未扫码"
+                log(["扫码登录"], f"{status_str} | 剩余过期时间 {expireTime} s")
             elif status == 1:
                 status_str = "已扫码待确认"
+                log(["扫码登录"], f"{status_str} | 剩余过期时间 {expireTime} s")
             elif status == 2:
                 status_str = "已登录"
-            print(f"{status_str} | 剩余过期时间 {expireTime} s")
+                log(["success", "扫码登录"], f"{status_str} | 剩余过期时间 {expireTime} s")
+            else:
+                log(["扫码登录"], f"{status_str} | 剩余过期时间 {expireTime} s")
             if status == 2:
                 # userapi.login(token)
                 self.userapi.loginv2(token)

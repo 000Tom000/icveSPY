@@ -45,7 +45,7 @@ class StudyApi:
         res = self.sp.session.get("https://zjy2.icve.com.cn/prod-api/spoc/courseDesign/getStudyCellInfo",
                                   headers=headers, params=params)
         # log(["studyapi", "source"], res.json()["data"])
-        show_kv(res.json()["data"])
+        # show_kv(res.json()["data"])
         res = res.json()["data"]["studentStudyRecord"]
         return res
 

@@ -4,15 +4,17 @@ from utils.baseIO import get_auth, get_cookies, save_auth, save_cookies, save_me
 
 
 class SP:
-    def __init__(self):
+    def __init__(self, login: bool = True):
         super().__init__()
+        self.login = login
         self.load()
 
     # 加载所有
     def load(self):
-        self.session = requests.Session()
-        self.session.cookies.update(get_cookies())
         self.authorization = get_auth()
+        self.session = requests.Session()
+        if self.login:
+            self.session.cookies.update(get_cookies())
         self.me = get_me()
 
     # 保存所有

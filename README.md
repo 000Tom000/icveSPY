@@ -1,19 +1,16 @@
-# icveSPY
-
-## 智慧职教(执教云) 自动化管理
+# icveSPY 智慧职教(执教云) 自动化管理
 
 + 实现自动化管理自己的账号，包括自动签到、自动刷课 ······
 
-## 版本 v1.1
+## 版本 v2.0
 
-1. 修复了 **用户持久化登录** 不能正常保存缓存的bug
-2. 新增了 **自动签到** 、 **自动抢答** 功能
-3. 新增了 **定时任务** 功能 ( wait_until函数 )
++ 修复了无法正常 **自动签到** 的bug ( bad参数 )
 
-### 新增功能
+### 项目结构优化
 
-+ 自动签到
-+ 自动抢答
++ 对 **sp(爬虫子)** 对象的管理做了调整与优化
++ 对 **main.py** 中的 **sp(爬虫子)** 的引用方案做了调整与优化
++ 调整了 **日志** 的输出方案，分成info、success、error大类
 
 ### 主要功能
 
@@ -65,7 +62,7 @@ print(sp)  # 打印sp对象
 
 ```python
 from models.sper import SP
-from services.user import UserService
+from services.userservice import UserService
 
 sp = SP()  # 一个爬虫子
 userservice = UserService(sp)  # user相关的service
@@ -82,6 +79,11 @@ sp = SP()  # 一个爬虫子
 userapi = UserApi(sp)  # user相关的api
 userapi.mev2()  # 获取当前用户信息
 ```
+
+## 开发者须知
+
++ 如果开发者对项目感兴趣，欢迎你来参与项目的 **拓展开发**
++ 开发者在 **拓展开发** 过程应该继续延续项目已有的代码编写 **格式与规范**
 
 ## 作者
 

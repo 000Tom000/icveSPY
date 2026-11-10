@@ -1,7 +1,7 @@
 import json
 import pathlib
 
-from config import AUTH_FILE, COOKIES_FILE, ME_FILE, STUDY_LOG_FILE, MAIN_LOG_FILE, USER_LOG_FILE
+from config import AUTH_FILE, COOKIES_FILE, ME_FILE, INFO_LOG_FILE, SUCC_LOG_FILE, ERROR_LOG_FILE, DEBUG_LOG_FILE
 from datetime import datetime
 
 
@@ -75,14 +75,19 @@ def log(sign: list | str, text: str) -> None:
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
     if type(sign) == str:
         sign = [sign]
-    hint_text = f"{timestamp}\t\t{'->'.join(sign)}\t\t{text}"
-    api_sign = sign[0]
-    if api_sign == "study":
-        file_path = STUDY_LOG_FILE
-    elif api_sign == "user":
-        file_path = USER_LOG_FILE
+    api_sign = sign.pop(0)
+    if api_sign == "info":
+        file_path = INFO_LOG_FILE
+    elif api_sign == "success":
+        file_path = SUCC_LOG_FILE
+    elif api_sign == "error":
+        file_path = ERROR_LOG_FILE
+    elif api_sign == "debug" or api_sign == "data":
+        file_path = DEBUG_LOG_FILE
     else:
-        file_path = MAIN_LOG_FILE
+        sign.insert(0, api_sign)
+        file_path = INFO_LOG_FILE
+    hint_text = f"{timestamp}\t\t{'->'.join(sign)}\t\t{text}"
     with open(file_path, "a+", encoding="utf-8") as file:
         file.write(f"{hint_text}\n")
     print(hint_text)

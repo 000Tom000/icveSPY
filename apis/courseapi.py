@@ -80,13 +80,13 @@ class CourseApi():
             "teachId": teachId
         }
         res = self.sp.session.post("https://zjy2.icve.com.cn/prod-api/spoc/courseFaceTeachSignStudent", headers=headers,
-                                   data=data)
+                                   json=data)
         res = res.json()
         if res["code"] == 200:
             log(["签到", "success"], "签到成功！")
             return True
         else:
-            log(["签到", "error"], res["msg"])
+            log(["签到", "error"], res)
             return False
 
     # 抢答

@@ -1,21 +1,14 @@
-import json, math, time
-import threading
+import time, threading
 from datetime import datetime
-
-from apis.courseapi import CourseApi
-from apis.studyapi import StudyApi
-from apis.userapi import UserApi
-from services.course import CourseService
-from services.study import StudyService
-from services.user import UserService
+from services.courseservice import CourseService
+from services.studyservice import StudyService
+from services.userservice import UserService
 from models.sper import SP
 from utils.baseIO import log
 
 
 # 保证用户处于登录状态
-def ensure_login(sp: SP = None):
-    if sp is None:
-        sp = SP()
+def ensure_login(sp: SP):
     userservice = UserService(sp)
     userservice.me()
     while not sp.me:
@@ -23,9 +16,7 @@ def ensure_login(sp: SP = None):
 
 
 # 自动刷课（一个课程）
-def auto_study_course(course_name_contains: str, sp: SP = None):
-    if sp is None:
-        sp = SP()
+def auto_study_course(sp: SP, course_name_contains: str):
     courseservice = CourseService(sp)
     studyservice = StudyService(sp)
 
@@ -42,9 +33,7 @@ def auto_study_course(course_name_contains: str, sp: SP = None):
 
 
 # 自动签到
-def ensure_checkin(course_name_contains: str, sp: SP = None):
-    if sp is None:
-        sp = SP()
+def ensure_checkin(sp: SP, course_name_contains: str):
     courseservice = CourseService(sp)
     # 课程
     course = courseservice.course(course_name_contains)
@@ -61,9 +50,7 @@ def ensure_checkin(course_name_contains: str, sp: SP = None):
 
 
 # 自动抢答
-def ensure_quick_answer(course_name_contains: str, sp: SP = None):
-    if sp is None:
-        sp = SP()
+def ensure_quick_answer(sp: SP, course_name_contains: str):
     courseservice = CourseService(sp)
     # 课程
     course = courseservice.course(course_name_contains)
@@ -80,43 +67,52 @@ def ensure_quick_answer(course_name_contains: str, sp: SP = None):
 
 
 # 定时启动
-# time模板 "%Y-%m-%d %H:%M:%S"
-# 例子 "2026-11-02 11:02:00" 意为等待到 "2026-11-02 11:02:00"
-def wait_until(startTime: str):
+# time模板 "%Y-%m-%d %H:%M:%S" 或者 传入整型数值(单位为秒的时间戳)
+# 例子 "2026-11-02 11:02:00" 意为 等待到2026-11-02 11:02:00
+def wait_until(startTime: str | int):
     now = int(datetime.now().timestamp())
-    st = int(datetime.strptime(startTime, "%Y-%m-%d %H:%M:%S").timestamp())
-    if now >= st:
-        log(["定时", "error"], f"{startTime} 已过，直接执行后续的程序")
+    if type(startTime) == str:
+        st = int(datetime.strptime(startTime, "%Y-%m-%d %H:%M:%S").timestamp())
     else:
-        log(["定时", "info"], f"将于 {startTime} 继续执行后续的程序，剩余 {st - now} s")
+        st = startTime
+    if now >= st:
+        log(["定时"], f"{startTime} 已过，直接执行后续的程序")
+    else:
+        log(["定时"], f"将于 {startTime} 继续执行后续的程序，剩余 {st - now} s")
         time.sleep(st - now)
 
 
+######################################################################
+################################ demo ################################
+######################################################################
+# 自动刷课
+def demo_for_auto_study_course():
+    sp = SP(login=True)
+    ensure_login(sp)
+    auto_study_course(sp, "linux")
+    # auto_study_course(sp, "软件测试")
+
+
+# 自动签到
+def demo_for_auto_checkin():
+    def auto_checkin(sp, start_time: str, course_name_contains: str):
+        wait_until(start_time)
+        ensure_checkin(sp, course_name_contains)
+
+    def auto_quick_answer(sp, start_time: str, course_name_contains: str):
+        wait_until(start_time)
+        ensure_quick_answer(sp, course_name_contains)
+
+    sp = SP(login=True)
+    ensure_login(sp)
+    # 多线程定时任务
+    threading.Thread(target=auto_checkin, args=(sp, "2026-11-10 13:25:00", "linux",)).start()
+    # threading.Thread(target=auto_checkin, args=("2026-11-09 10:10:00", "软件测试",)).start()
+    # threading.Thread(target=auto_quick_answer, args=("2026-11-09 10:20:00", "软件测试",)).start()
+    # threading.Thread(target=auto_checkin, args=("2026-11-09 13:25:00", "AI",)).start()
+    # threading.Thread(target=auto_checkin, args=("2026-11-06 8:15:00", "Web",)).start()
+
+
 if __name__ == '__main__':
-    # 软件测试课的签到执行流程
-    def auto_checkin_rjcs():
-        wait_until("2026-11-02 10:15:00")
-        ensure_checkin("软件测试")
-
-
-    # 软件测试课的抢答执行流程
-    def auto_quick_answer_rjcs():
-        wait_until("2026-11-02 11:05:00")
-        ensure_checkin("软件测试")
-
-
-    # AI课的签到执行流程
-    def auto_checkin_ai():
-        wait_until("2026-11-02 13:20:00")
-        ensure_checkin("AI")
-
-
-    # 多线程检测多项活动
-    checkin_rjcs_thread = threading.Thread(target=auto_checkin_rjcs)
-    quick_answer_rjcs_thread = threading.Thread(target=auto_quick_answer_rjcs)
-    checkin_ai_thread = threading.Thread(target=auto_checkin_ai)
-
-    ensure_login()  # 确保用户登录
-    # checkin_rjcs_thread.start()  # 软件测试课的签到执行流程 启动
-    # quick_answer_rjcs_thread.start()  # 软件测试课的抢答执行流程 启动
-    checkin_ai_thread.start()  # AI课的签到执行流程 启动
+    demo_for_auto_checkin()
+    # demo_for_auto_study_course()
