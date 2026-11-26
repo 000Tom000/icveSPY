@@ -1,0 +1,15 @@
+{
+  "user1": [
+    {
+      "study_course": 1,
+      "course_name_contains": "自动控制",
+      "description": "我这学期要学习《自动控制原理》这门课，上面写了“自动控制”，程序会自动识别到包含“自动控制”的课程"
+    },
+    {
+      "auto_checkin": 1,
+      "start_time": "2026-11-10 13:25:00",
+      "course_name_contains": "自动控制",
+      "description": "我这学期要上《自动控制原理》这门课，上面写了“自动控制”，程序会自动识别到包含“自动控制”的课程"
+    }
+  ]
+}

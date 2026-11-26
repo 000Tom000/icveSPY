@@ -117,6 +117,7 @@ def demo_for_auto_checkin():
         # threading.Thread(target=auto_quick_answer, args=(sp, "2026-11-23 10:20:00", "软件测试",)).start()
         # threading.Thread(target=auto_checkin, args=(sp, "2026-11-23 13:25:00", "AI",)).start()
         threading.Thread(target=auto_checkin, args=(sp, "2026-11-25 8:15:00", "Web",)).start()
+        # test
 
 
 if __name__ == '__main__':
