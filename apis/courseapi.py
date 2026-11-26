@@ -25,6 +25,21 @@ class CourseApi():
         # for course in res:
         #     log(["courseapi", "courses"], course)
 
+    # 加入的全部课程
+    def all_courses(self):
+        headers = {
+            "authorization": self.sp.authorization
+        }
+        params = {
+            "pageNum": 1,
+            "pageSize": 15
+        }
+        res = self.sp.session.get("https://zjy2.icve.com.cn/prod-api/spoc/courseInfoStudent/myCourseListNew",
+                                  headers=headers,
+                                  params=params)
+        # print(res.json())
+        return res.json()["rows"]
+
     # 课程的全部的课堂
     def teaches(self, classId: str, courseId: str, courseInfoId: str):
         headers = {

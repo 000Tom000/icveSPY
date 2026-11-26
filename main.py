@@ -1,4 +1,4 @@
-import time, threading
+import time, threading, json
 from datetime import datetime
 from services.courseservice import CourseService
 from services.studyservice import StudyService
@@ -24,7 +24,9 @@ def auto_study_course(sp: SP, course_name_contains: str):
 
     # 课程
     course = courseservice.course(course_name_contains)
+    # course = courseservice.course_from_all_courses(course_name_contains)
     if not course:
+        log(["error", "未获取到课程"], f"-> {course_name_contains} <- 请检查课程名输入是否正确")
         return
     # 要学习的资源
     targets = studyservice.sources(course["courseId"], course["courseInfoId"], course["classId"])
@@ -39,6 +41,9 @@ def ensure_checkin(sp: SP, course_name_contains: str):
     courseservice = CourseService(sp)
     # 课程
     course = courseservice.course(course_name_contains)
+    if not course:
+        log(["error", "未获取到课程"], f"-> {course_name_contains} <- 请检查课程名输入是否正确")
+        return
     # 今日课堂
     teach = None
     while not teach:
@@ -56,6 +61,9 @@ def ensure_quick_answer(sp: SP, course_name_contains: str):
     courseservice = CourseService(sp)
     # 课程
     course = courseservice.course(course_name_contains)
+    if not course:
+        log(["error", "未获取到课程"], f"-> {course_name_contains} <- 请检查课程名输入是否正确")
+        return
     # 今日课堂
     teach = None
     while not teach:
@@ -120,6 +128,42 @@ def demo_for_auto_checkin():
         # test
 
 
+def product1():
+    with open("config.json", "r", encoding="utf-8") as file:
+        data = json.load(file)
+    task_map = {
+        "study": "自动刷课",
+        "checkin": "自动签到",
+        "quick_ans": "自动抢答"
+    }
+    sps = list()
+    for user, tasks in data.items():
+        sp = SP(user=user, tasks=tasks)
+        task_names = [task_map[task["type"]] for task in tasks]
+        log([f"{user}的任务"], f"[{', '.join(task_names)}]")
+        sps.append(sp)
+    for sp in sps:
+        ensure_login(sp)
+        for task in sp.tasks:
+            if task["type"] == "study":
+                threading.Thread(target=auto_study_course, args=(sp, task["course_name_contains"],)).start()
+            elif task["type"] == "checkin":
+                def auto_checkin(sp, start_time: str, course_name_contains: str):
+                    wait_until(start_time)
+                    ensure_checkin(sp, course_name_contains)
+
+                threading.Thread(target=auto_checkin,
+                                 args=(sp, task["start_time"], task["course_name_contains"],)).start()
+            elif task["type"] == "quick_ans":
+                def auto_quick_answer(sp, start_time: str, course_name_contains: str):
+                    wait_until(start_time)
+                    ensure_quick_answer(sp, course_name_contains)
+
+                threading.Thread(target=auto_quick_answer,
+                                 args=(sp, task["start_time"], task["course_name_contains"],)).start()
+
+
 if __name__ == '__main__':
-    demo_for_auto_checkin()
+    # demo_for_auto_checkin()
     # demo_for_auto_study_course()
+    product1()

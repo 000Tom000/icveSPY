@@ -20,6 +20,17 @@ class CourseService:
         log(["error", "获取课程"], f"获取失败！")
         return None
 
+    # 获取加入的全部课程(课程名包含course_name_contains)(第一个)
+    def course_from_all_courses(self, course_name_contains: str) -> dict | None:
+        courses = self.courseapi.all_courses()
+        # return
+        for course in courses:
+            if course["courseName"].find(course_name_contains) != -1:
+                log(["success", "获取课程"], f"获取到名为 {course['courseName']} 的课程")
+                return course
+        log(["error", "获取课程"], f"获取失败！")
+        return None
+
     # 获取今日课堂(第一个)
     def teach(self, classId: str, courseId: str, courseInfoId: str) -> dict | None:
         teaches = self.courseapi.teaches(classId, courseId, courseInfoId)

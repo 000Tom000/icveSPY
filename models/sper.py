@@ -3,9 +3,10 @@ from utils.baseIO import get_auth, get_cookies, save_auth, save_cookies, save_me
 
 
 class SP:
-    def __init__(self, user: str = None):
+    def __init__(self, user: str = None, tasks: list = []):
         super().__init__()
         self.user = user
+        self.tasks = tasks
         self.load()
 
     # 加载所有

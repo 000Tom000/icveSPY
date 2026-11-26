@@ -31,7 +31,7 @@ class StudyService:
                             targets.append(st_child)
                 else:
                     targets.append(st)
-            time.sleep(0.21)
+            time.sleep(0.51)
         log(["获取学习内容"], f"获取到 {len(targets)} 个学习资源")
         return targets
 
@@ -54,7 +54,7 @@ class StudyService:
                 log(["success", "学习"], f"{name} | 课件 | {lastNum} / {end} | 学习成功 √")
             else:
                 log(["error", "学习"], f"{name} | 课件 | {lastNum} / {end} | 学习失败 X")
-            time.sleep(0.34)
+            time.sleep(2.3)
 
     # 视频学习
     def video_study(self, classId: str, courseInfoId: str, sourceId: str, start: int, end: int,
@@ -68,7 +68,7 @@ class StudyService:
             "studyTime": 5,
             "totalNum": end
         }
-        step = 10
+        step = 5
         for lastNum in range(start, (end // step + 1) * step + 1, step):
             if lastNum > end:
                 lastNum = end
@@ -79,7 +79,7 @@ class StudyService:
                 log(["success", "学习"], f"{name} | 视频 | {lastNum} / {end} | 学习成功 √")
             else:
                 log(["error", "学习"], f"{name} | 视频 | {lastNum} / {end} | 学习失败 X")
-            time.sleep(0.34)
+            time.sleep(1.3)
 
     # 学习
     def study(self, target: dict, classId: str):
@@ -91,7 +91,8 @@ class StudyService:
         if res.get("status", 2) < 0:
             log(["error", "学习"], "该课件有问题，请手动学习")
             return
-        ppt_type_fixes = ["ppt", "txt", "doc", "rtf"]
+        ppt_type_fixes = ["ppt", "txt", "doc", "rtf", "pdf"]
+        # ppt_type_fixes = ["txt", "doc", "rtf", "pdf"]
         if target["fileType"] in ppt_type_fixes:
             end = res["args"]["page_count"]
             start = math.floor(target["speed"] / 100 * end)

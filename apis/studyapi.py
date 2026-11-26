@@ -101,6 +101,7 @@ class StudyApi:
         data = json.dumps(data).replace(" ", "")
         res = self.sp.session.post("https://zjy2.icve.com.cn/prod-api/spoc/studyRecord", headers=headers, data=data)
         res = res.json()
+        print(res)
         return res["code"] == 200
 
 
