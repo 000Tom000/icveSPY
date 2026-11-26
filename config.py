@@ -1,9 +1,9 @@
-import pathlib
+import os, pathlib
 
 ROOT = pathlib.Path(__file__).parent.resolve()
 # 缓存
 CACHES_DIR = ROOT / "caches"
-AUTH_FILE = CACHES_DIR / "authorization"
+AUTH_FILE = CACHES_DIR / "authorizations.json"
 COOKIES_FILE = CACHES_DIR / "cookies.json"
 ME_FILE = CACHES_DIR / "me.json"
 
@@ -13,3 +13,6 @@ INFO_LOG_FILE = LOGS_DIR / "info.log"
 SUCC_LOG_FILE = LOGS_DIR / "success.log"
 ERROR_LOG_FILE = LOGS_DIR / "error.log"
 DEBUG_LOG_FILE = LOGS_DIR / "debug.log"
+
+os.makedirs(CACHES_DIR, exist_ok=True)
+os.makedirs(LOGS_DIR, exist_ok=True)

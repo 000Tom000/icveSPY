@@ -1,65 +1,82 @@
-import json
-import pathlib
-
+import os, json, pathlib
 from config import AUTH_FILE, COOKIES_FILE, ME_FILE, INFO_LOG_FILE, SUCC_LOG_FILE, ERROR_LOG_FILE, DEBUG_LOG_FILE
 from datetime import datetime
 
 
-# # 保存 authorization 和 cookies
-# def save():
-#     global authorization, session
-#     save_auth()
-#     save_cookies()
-#
-#
-# # 加载 authorization 和 cookies
-# def load():
-#     global authorization, session
-#     get_auth()
-#     get_cookies()
-
-
 # 保存authorization
-def save_auth(authorization: str) -> None:
-    with open(AUTH_FILE, "w") as file:
-        file.write(authorization)
+def save_auth(authorization: str | dict, user: str = None) -> None:
+    if user:
+        if os.path.isfile(AUTH_FILE):
+            with open(AUTH_FILE, "r", encoding="utf-8") as file:
+                auths = json.load(file)
+        else:
+            auths = dict()
+        auths[user] = authorization
+        authorization = auths
+    with open(AUTH_FILE, "w", encoding="utf-8") as file:
+        json.dump(authorization, file, indent=4, ensure_ascii=False)
 
 
 # 获取authorization
-def get_auth() -> str:
+def get_auth(user: str = None) -> str | dict:
     if pathlib.Path(AUTH_FILE).exists():
-        with open(AUTH_FILE, "r") as file:
-            return file.read()
+        with open(AUTH_FILE, "r", encoding="utf-8") as file:
+            if user:
+                return json.load(file).get(user, str())
+            else:
+                return json.load(file)
     else:
         return str()
 
 
 # 保存cookies
-def save_cookies(cookies: dict) -> None:
+def save_cookies(cookies: dict, user: str = None) -> None:
+    if user:
+        if os.path.isfile(COOKIES_FILE):
+            with open(COOKIES_FILE, "r", encoding="utf-8") as file:
+                cks = json.load(file)
+        else:
+            cks = dict()
+        cks[user] = cookies
+        cookies = cks
     with open(COOKIES_FILE, "w", encoding="utf-8") as file:
         json.dump(cookies, file, ensure_ascii=False, indent=4)
 
 
 # 装载cookies
-def get_cookies() -> dict:
+def get_cookies(user: str = None) -> dict:
     if pathlib.Path(COOKIES_FILE).exists():
         with open(COOKIES_FILE, "r", encoding="utf-8") as file:
-            return json.load(file)
+            if user:
+                return json.load(file).get(user, dict())
+            else:
+                return json.load(file)
     else:
         return dict()
 
 
 # 保存me
-def save_me(me: dict) -> None:
+def save_me(me: dict, user: str = None) -> None:
+    if user:
+        if os.path.isfile(ME_FILE):
+            with open(ME_FILE, "r", encoding="utf-8") as file:
+                users = json.load(file)
+        else:
+            users = dict()
+        users[user] = me
+        me = users
     with open(ME_FILE, "w", encoding="utf-8") as file:
         json.dump(me, file, ensure_ascii=False, indent=4)
 
 
 # 获取me
-def get_me() -> dict:
+def get_me(user: str = None) -> dict:
     if pathlib.Path(ME_FILE).exists():
         with open(ME_FILE, "r", encoding="utf-8") as file:
-            return json.load(file)
+            if user:
+                return json.load(file).get(user, dict())
+            else:
+                return json.load(file)
     else:
         return dict()
 

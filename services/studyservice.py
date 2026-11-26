@@ -1,8 +1,4 @@
-import collections
-import json
-import math
-import time
-
+import json, math, time, collections
 from apis.studyapi import StudyApi
 from models.sper import SP
 from utils.baseIO import log

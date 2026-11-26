@@ -1,5 +1,4 @@
 import time
-
 from apis.userapi import UserApi
 from models.sper import SP
 from utils.baseIO import log
@@ -14,12 +13,15 @@ class UserService:
     # 个人信息
     def me(self):
         self.userapi.mev2()
-        if self.sp.me:
+        res = self.userapi.routers()
+        if self.sp.me and res["code"] == 200:
             self.sp.save()
             log(["账号登录状态"],
-                f"已登录 | {self.sp.me["schoolName"]} | {self.sp.me["displayName"]} | {self.sp.me["mobile"]}")
+                f"{self.sp.user} 已登录 | {self.sp.me["schoolName"]} | {self.sp.me["displayName"]} | {self.sp.me["mobile"]}")
+            return True
         else:
-            log(["账号登录状态"], "未登录")
+            log(["账号登录状态"], f"{self.sp.user} 未登录")
+            return False
 
     # 扫码登录
     def login_progress(self):

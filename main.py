@@ -10,8 +10,10 @@ from utils.baseIO import log
 # 保证用户处于登录状态
 def ensure_login(sp: SP):
     userservice = UserService(sp)
-    userservice.me()
-    while not sp.me:
+    # ck = userservice.me()
+    # while not sp.me:
+    #     userservice.login_progress()
+    while not userservice.me():
         userservice.login_progress()
 
 
@@ -87,7 +89,7 @@ def wait_until(startTime: str | int):
 ######################################################################
 # 自动刷课
 def demo_for_auto_study_course():
-    sp = SP(login=True)
+    sp = SP(user="Tom")
     ensure_login(sp)
     auto_study_course(sp, "linux")
     # auto_study_course(sp, "软件测试")
@@ -103,14 +105,18 @@ def demo_for_auto_checkin():
         wait_until(start_time)
         ensure_quick_answer(sp, course_name_contains)
 
-    sp = SP(login=True)
-    ensure_login(sp)
-    # 多线程定时任务
-    threading.Thread(target=auto_checkin, args=(sp, "2026-11-10 13:25:00", "linux",)).start()
-    # threading.Thread(target=auto_checkin, args=("2026-11-09 10:10:00", "软件测试",)).start()
-    # threading.Thread(target=auto_quick_answer, args=("2026-11-09 10:20:00", "软件测试",)).start()
-    # threading.Thread(target=auto_checkin, args=("2026-11-09 13:25:00", "AI",)).start()
-    # threading.Thread(target=auto_checkin, args=("2026-11-06 8:15:00", "Web",)).start()
+    sps = list()
+    sps.append(SP(user="Tom"))
+    # sps.append(SP(user="zs"))
+
+    for sp in sps:
+        ensure_login(sp)
+        # 多线程定时任务
+        # threading.Thread(target=auto_checkin, args=(sp, "2026-11-24 13:25:00", "linux",)).start()
+        # threading.Thread(target=auto_checkin, args=(sp, "2026-11-23 10:15:00", "软件测试",)).start()
+        # threading.Thread(target=auto_quick_answer, args=(sp, "2026-11-23 10:20:00", "软件测试",)).start()
+        # threading.Thread(target=auto_checkin, args=(sp, "2026-11-23 13:25:00", "AI",)).start()
+        threading.Thread(target=auto_checkin, args=(sp, "2026-11-25 8:15:00", "Web",)).start()
 
 
 if __name__ == '__main__':

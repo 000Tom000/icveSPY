@@ -8,21 +8,14 @@ from Crypto.Util.Padding import pad
 
 
 def encrypt_data(data: dict, authorization: str):
-    # MD5(e)，取前16位十六进制字符
     key = hashlib.md5(authorization.encode("utf-8")).hexdigest()[:16]
-
-    # JSON序列化
     plaintext = json.dumps(
         data,
         ensure_ascii=False,
         separators=(",", ":")
     ).encode("utf-8")
-
-    # AES ECB + PKCS7
     cipher = AES.new(key.encode("utf-8"), AES.MODE_ECB)
     encrypted = cipher.encrypt(pad(plaintext, AES.block_size))
-
-    # Base64
     res = base64.b64encode(encrypted).decode("utf-8")
     res = quote(res, safe="")
     return res

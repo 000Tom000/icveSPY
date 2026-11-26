@@ -1,7 +1,5 @@
-import time
-
 from models.sper import SP
-from utils.common import show_qrcode
+from utils.common import show_qrcode, show_qrcode2
 from utils.baseIO import log
 
 
@@ -16,7 +14,7 @@ class UserApi:
         res = res.json()["data"]
         sceneId = res["sceneId"]
         qrUrl = res["qrUrl"]
-        show_qrcode(qrUrl)
+        show_qrcode2(qrUrl)
         return (sceneId, qrUrl)
 
     # 获取登录二维码的操作状态
@@ -81,6 +79,13 @@ class UserApi:
                                    params=params).json()
         self.sp.me = res["data"]
 
+    def routers(self):
+        headers = {
+            "authorization": self.sp.authorization,
+        }
+        res = self.sp.session.get("https://zjy2.icve.com.cn/prod-api/system/menu/getRouters", headers=headers)
+        return res.json()
+
     # 退登
     def logout(self):
         headers = {
@@ -91,30 +96,6 @@ class UserApi:
         }
         res = self.sp.session.delete("https://zjy2.icve.com.cn/prod-api/auth/logout", headers=headers, params=params)
         log(["userapi", "logout"], res.json())
-
-# 登录过程
-## 判定了用户未登录就可以调用该函数
-# def login_progress(sp: SP, userapi: USERAPI):
-#     sceneId, qrUrl = userapi.login_qrcode()
-#     while True:
-#         # print(userapi.login_qrcode_status(sceneId))
-#         status, expireTime, token = userapi.login_qrcode_status(sceneId)
-#         # print(status, expireTime)
-#         status_str = "status : " + str(status)
-#         if status == 0:
-#             status_str = "未扫码"
-#         elif status == 1:
-#             status_str = "已扫码待确认"
-#         elif status == 2:
-#             status_str = "已登录"
-#         print(f"{status_str} | 剩余过期时间 {expireTime} s")
-#         if status == 2:
-#             # userapi.login(token)
-#             userapi.loginv2(token)
-#             sp.me = userapi.mev2()
-#             sp.save()
-#             return
-#         time.sleep(1.23)
 
 
 # if __name__ == '__main__':

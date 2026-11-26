@@ -16,3 +16,10 @@ def show_qrcode(url: str = None):
     plt.imshow(img, cmap="gray")
     plt.axis("off")  # 隐藏坐标轴
     plt.show()
+
+
+def show_qrcode2(url: str = None):
+    qr = qrcode.QRCode(border=1)
+    qr.add_data(url)
+    qr.make(fit=True)
+    qr.print_ascii(invert=True)

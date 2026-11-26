@@ -1,5 +1,4 @@
 from utils.baseIO import log
-from datetime import datetime
 from models.sper import SP
 
 
@@ -9,7 +8,7 @@ class CourseApi():
         self.sp = sp
 
     # 全部最近加入的课程
-    def courses(self) -> list:
+    def courses(self) -> list | None:
         headers = {
             "authorization": self.sp.authorization
         }
@@ -83,10 +82,10 @@ class CourseApi():
                                    json=data)
         res = res.json()
         if res["code"] == 200:
-            log(["签到", "success"], "签到成功！")
+            log(["success", "签到"], "签到成功！")
             return True
         else:
-            log(["签到", "error"], res)
+            log(["error", "签到"], res)
             return False
 
     # 抢答
@@ -115,7 +114,8 @@ class CourseApi():
 
 
 if __name__ == '__main__':
-    courseApi = CourseApi(SP())
-    res = courseApi.teach_activities("9F2C7963-806B-428C-8ABC-72081F9805A1", "waxhaqwvkqhfatywj9bepg",
-                                     "44956957-A1E1-497A-8130-9B7AD8D3975B")
-    print(res)
+    # courseApi = CourseApi(SP())
+    # res = courseApi.teach_activities("9F2C7963-806B-428C-8ABC-72081F9805A1", "waxhaqwvkqhfatywj9bepg",
+    #                                  "44956957-A1E1-497A-8130-9B7AD8D3975B")
+    # print(res)
+    pass
